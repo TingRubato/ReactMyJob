@@ -1,0 +1,41 @@
+.job-detail {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+.job-detail h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.job-detail p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.job-detail p strong {
+    color: #333;
+}
+
+.job-detail button {
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.job-detail button:disabled {
+    background-color: #ccc;
+}
+
+.job-detail button:not(:first-child) {
+    margin-left: 10px;
+}
