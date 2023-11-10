@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import './JobDetail.css'; // Ensure you have the CSS file for styling
+import { useMemo } from "react";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+
 
 function JobDetail() {
   const { job_fccid } = useParams(); // Corrected to job_fccid
@@ -30,9 +33,15 @@ function JobDetail() {
     }
   };
 
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+  });
+  const center = useMemo(() => ({ lat: 38.624691, lng: -90.184776 }), []);
+
+
   const handleMarkAsApplied = async () => {
     if (!job) return;  // Check if the job details are available
-  
+
     // Create an object with the structure your backend expects
     const jobApplication = {
       jobId: job.id, // Assuming 'id' is the correct field and corresponds to 'jobId'
@@ -43,7 +52,7 @@ function JobDetail() {
       jobType: job.job_type,
       jobDescription: job.job_description
     };
-  
+
     try {
       // Send the POST request with the jobApplication object
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/mark-applied`, jobApplication, {
@@ -52,7 +61,7 @@ function JobDetail() {
           'Authorization': `Bearer ${localStorage.getItem('token')}` // Retrieve the JWT from localStorage
         }
       });
-  
+
       // Update the application status based on the response from the backend
       if (response.data.success) {
         setApplicationStatus('Applied');
@@ -64,25 +73,44 @@ function JobDetail() {
       setApplicationStatus('Failed to mark as applied');
     }
   };
-  
+
 
   if (!job) {
     return <div>Loading...</div>;
   }
+  // 解析地理坐标
+  const coordinates = job.job_location.match(/POINT\((.+)\s(.+)\)/);
+  const lat = parseFloat(coordinates[2]);
+  const lon = parseFloat(coordinates[1]);
 
   return (
     <div className="job-detail">
-      <h2>{job.job_title}</h2>
-      <p><strong>Company:</strong> {job.company_name}</p>
-      <p><strong>Link:</strong> <a href={job.job_link} target="_blank" rel="noopener noreferrer">{job.job_link}</a></p>
-      <p><strong>Location:</strong> {job.job_location}</p>
-      <p><strong>Post Date:</strong> {new Date(job.post_date).toLocaleDateString()}</p>
-      {job.salary && <p><strong>Salary:</strong> {job.salary.toLocaleString()}</p>}
-      <p><strong>Type:</strong> {job.job_type}</p>
-      <p><strong>Description:</strong> {job.job_description}</p>  
-      <button onClick={handleApplyClick}>Apply</button>
-      <button onClick={handleMarkAsApplied}>{applicationStatus}</button>
-      <button onClick={() => window.history.back()}>Go Back</button>
+      <div className="job-info">
+        <h2>{job.job_title}</h2>
+        <p><strong>Company:</strong> {job.company_name}</p>
+        <p><strong>Link:</strong> <a href={job.job_link} target="_blank" rel="noopener noreferrer">{job.job_link}</a></p>
+        <p><strong>Location:</strong> {job.job_location}</p>
+        <p><strong>Post Date:</strong> {new Date(job.post_date).toLocaleDateString()}</p>
+        {job.salary && <p><strong>Salary:</strong> {job.salary.toLocaleString()}</p>}
+        <p><strong>Type:</strong> {job.job_type}</p>
+        <p><strong>Description:</strong> {job.job_description}</p>
+        <button onClick={handleApplyClick}>Apply</button>
+        <button onClick={handleMarkAsApplied}>{applicationStatus}</button>
+        <button onClick={() => window.history.back()}>Go Back</button>
+      </div>
+      <div className="App">
+        {!isLoaded ? (
+          <h1>Loading...</h1>
+        ) : (
+          <GoogleMap
+            mapContainerClassName="map-container"
+            center={center}
+            zoom={10}
+          >
+            <Marker position={{ lat: lat, lng: lon }} />
+          </GoogleMap>
+        )}
+      </div>
     </div>
   );
 }

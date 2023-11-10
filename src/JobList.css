@@ -1,74 +1,104 @@
 /* JobList.css */
 .job-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
+  list-style-type: none;
+  padding: 20px;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 800px;
+}
+
+.job-item {
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.job-item h3 {
+  margin: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.job-item p {
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.job-item a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.job-item a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: red;
+  margin: 20px 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.pagination button, .page-item {
+  box-sizing: border-box; /* Add this line */
+  border: 1px solid #ddd;
+  padding: 5px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.pagination button:hover, .page-item:hover {
+  background-color: #e8e8e8;
+}
+
+.pagination .page-item.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination .page-item.disabled, .pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination button.current-page {
+  background-color: #0066cc;
+  color: white;
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-indicator p {
+  font-size: 24px;
+  color: #333;
+}
+
+@media (max-width: 600px) {
   .job-item {
-    border: 1px solid #ddd;
-    margin-bottom: 15px;
-    padding: 20px;
-    border-radius: 4px;
-    background-color: #f9f9f9;
+      padding: 10px;
   }
-  
+
   .job-item h3 {
-    margin-top: 0;
-    color: #333;
+      font-size: 18px;
   }
-  
+
   .job-item p {
-    margin: 5px 0;
+      font-size: 14px;
   }
-  
-  .job-item a {
-    color: #0066cc;
-    text-decoration: none;
-  }
-  
-  .job-item a:hover {
-    text-decoration: underline;
-  }
-  
-  .error {
-    color: red;
-    margin: 20px 0;
-  }
-  
-  .pagination {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  .pagination button {
-    border: 1px solid #ddd;
-    padding: 5px 15px;
-    margin: 0 5px;
-    cursor: pointer;
-    background-color: #f8f8f8;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .pagination button:hover {
-    background-color: #e8e8e8;
-  }
-  
-  .pagination .page-item.active {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .pagination .page-item.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-  
-  /* Add this if you want to highlight the current page */
-  .pagination button.current-page {
-    background-color: #0066cc;
-    color: white;
-  }
-  
+}
