@@ -5,6 +5,10 @@ import JobDetail from './JobDetail';
 import Login from './Login';
 import Register from './Register';
 
+/**
+ * Renders the application with the defined routes.
+ * @returns {JSX.Element} The rendered application.
+ */
 function App() {
   return (
     <Router>

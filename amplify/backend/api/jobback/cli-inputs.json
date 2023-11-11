@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "paths": {
+    "/server": {
+      "name": "/server",
+      "lambdaFunction": "reactmyjob40342136",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "read",
+          "update"
+        ]
+      }
+    }
+  }
+}
