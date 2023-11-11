@@ -7,14 +7,14 @@ import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 
 function JobDetail() {
-  const { job_fccid } = useParams(); // Corrected to job_fccid
+  const { job_jk } = useParams(); // Corrected to job_jk
   const [job, setJob] = useState(null);
   const [applicationStatus, setApplicationStatus] = useState('Not Applied');
 
   useEffect(() => {
     const fetchJobDetail = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/job-listings/${job_fccid}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/job-listings/${job_jk}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setJob(response.data);
@@ -25,7 +25,7 @@ function JobDetail() {
     };
 
     fetchJobDetail();
-  }, [job_fccid]); // Dependency array updated to job_fccid
+  }, [job_jk]); // Dependency array updated to job_jk
 
   const handleApplyClick = () => {
     if (job && job.job_link) {

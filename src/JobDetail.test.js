@@ -30,7 +30,7 @@ describe('JobDetail', () => {
   test('renders job details', async () => {
     render(
       <MemoryRouter initialEntries={['/jobs/123']}>
-        <Route path="/jobs/:job_fccid">
+        <Route path="/jobs/:job_jk">
           <JobDetail />
         </Route>
       </MemoryRouter>
@@ -53,7 +53,7 @@ describe('JobDetail', () => {
 
     render(
       <MemoryRouter initialEntries={['/jobs/123']}>
-        <Route path="/jobs/:job_fccid">
+        <Route path="/jobs/:job_jk">
           <JobDetail />
         </Route>
       </MemoryRouter>
@@ -71,7 +71,7 @@ describe('JobDetail', () => {
 
     render(
       <MemoryRouter initialEntries={['/jobs/123']}>
-        <Route path="/jobs/:job_fccid">
+        <Route path="/jobs/:job_jk">
           <JobDetail />
         </Route>
       </MemoryRouter>
@@ -107,7 +107,7 @@ describe('JobDetail', () => {
 
     render(
       <MemoryRouter initialEntries={['/jobs/123']}>
-        <Route path="/jobs/:job_fccid">
+        <Route path="/jobs/:job_jk">
           <JobDetail />
         </Route>
       </MemoryRouter>
@@ -143,7 +143,7 @@ describe('JobDetail', () => {
 
     render(
       <MemoryRouter initialEntries={['/jobs/123']}>
-        <Route path="/jobs/:job_fccid">
+        <Route path="/jobs/:job_jk">
           <JobDetail />
         </Route>
       </MemoryRouter>

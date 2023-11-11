@@ -10,7 +10,7 @@ const mockAxios = new MockAdapter(axios);
 describe('JobList', () => {
   const jobs = [
     {
-      job_fccid: '123',
+      job_jk: '123',
       job_title: 'Software Engineer',
       company_name: 'Google',
       job_location: 'Mountain View, CA',
@@ -21,7 +21,7 @@ describe('JobList', () => {
       job_link: 'https://www.google.com/careers'
     },
     {
-      job_fccid: '456',
+      job_jk: '456',
       job_title: 'Product Manager',
       company_name: 'Facebook',
       job_location: 'Menlo Park, CA',

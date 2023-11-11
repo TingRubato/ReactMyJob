@@ -167,12 +167,12 @@ app.get('/job-listings', authenticateToken, async (req, res) => {
   }
 });
 
-app.get('/job-listings/:job_fccid', authenticateToken, async (req, res) => {
-  console.log("Fetching job details for FCC ID:", req.params.job_fccid);
+app.get('/job-listings/:job_jk', authenticateToken, async (req, res) => {
+  console.log("Fetching job details for FCC ID:", req.params.job_jk);
   try {
-    const { job_fccid } = req.params;
-    const query = 'SELECT * FROM processed_job WHERE job_fccid = $1';
-    const { rows } = await pool.query(query, [job_fccid]);
+    const { job_jk } = req.params;
+    const query = 'SELECT * FROM processed_job WHERE job_jk = $1';
+    const { rows } = await pool.query(query, [job_jk]);
     if (rows.length > 0) {
       res.json(rows[0]);
     } else {

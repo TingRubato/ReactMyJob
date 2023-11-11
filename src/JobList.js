@@ -96,8 +96,8 @@ function JobList() {
           {currentJobs.length ? (
             <ul className="job-list">
               {currentJobs.map((job) => (
-                <li key={job.job_fccid} className="job-item">
-                  <Link to={`/jobs/${job.job_fccid}`}>
+                <li key={job.job_jk} className="job-item">
+                  <Link to={`/jobs/${job.job_jk}`}>
                     <h3>{job.job_title}</h3>
                   </Link>
                   <p><strong>Company:</strong> {job.company_name}</p>

@@ -26,7 +26,7 @@ function App() {
         <Route path="/jobs" element={<JobList />} />
 
         {/* Route for job details */}
-        <Route path="/jobs/:job_fccid" element={<JobDetail />} />
+        <Route path="/jobs/:job_jk" element={<JobDetail />} />
 
         {/* Fallback for any other route */}
         <Route path="*" element={<div>Page not found</div>} />
