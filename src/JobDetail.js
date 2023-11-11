@@ -27,6 +27,29 @@ function JobDetail() {
     fetchJobDetail();
   }, [job_jk]); // Dependency array updated to job_jk
 
+  useEffect(() => {
+    const fetchJobDetail = async () => {
+      try {
+        // Fetch job details
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/job-listings/${job_jk}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        setJob(response.data);
+
+        // Check application status
+        const appliedResponse = await axios.get(`${process.env.REACT_APP_API_URL}/is-applied/${job_jk}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        setApplicationStatus(appliedResponse.data.isApplied ? 'Applied' : 'Not Applied');
+      } catch (err) {
+        console.error('Error fetching job details:', err);
+      }
+    };
+
+    fetchJobDetail();
+  }, [job_jk]);
+
+
   const handleApplyClick = () => {
     if (job && job.job_link) {
       window.open(job.job_link, '_blank');
@@ -44,7 +67,7 @@ function JobDetail() {
 
     // Create an object with the structure your backend expects
     const jobApplication = {
-      jobId: job.id, // Assuming 'id' is the correct field and corresponds to 'jobId'
+      jobId: job.job_jk, // Assuming 'job_jk' is the correct field and corresponds to 'jobId'
       jobLink: job.job_link,
       companyName: job.company_name,
       companyLocation: job.job_location,
@@ -78,10 +101,26 @@ function JobDetail() {
   if (!job) {
     return <div>Loading...</div>;
   }
-  // 解析地理坐标
-  const coordinates = job.job_location.match(/POINT\((.+)\s(.+)\)/);
-  const lat = parseFloat(coordinates[2]);
-  const lon = parseFloat(coordinates[1]);
+
+  let lat, lon;
+  let coordinates;
+
+  if (job.job_location) {
+    coordinates = job.job_location.match(/POINT\((.+)\s(.+)\)/);
+    if (coordinates) {
+      lat = parseFloat(coordinates[2]);
+      lon = parseFloat(coordinates[1]);
+    }
+  }
+
+  const locationDisplay = job.job_location && coordinates ?
+    `${lat.toFixed(2)}, ${lon.toFixed(2)}` : 'Unavailable';
+
+  const buttonStyle = applicationStatus === 'Applied' ?
+    { backgroundColor: 'grey', cursor: 'not-allowed' } :
+    { backgroundColor: 'red', cursor: 'pointer' };
+
+
 
   return (
     <div className="job-detail">
@@ -89,13 +128,19 @@ function JobDetail() {
         <h2>{job.job_title}</h2>
         <p><strong>Company:</strong> {job.company_name}</p>
         <p><strong>Link:</strong> <a href={job.job_link} target="_blank" rel="noopener noreferrer">{job.job_link}</a></p>
-        <p><strong>Location:</strong> {job.job_location}</p>
+        <p><strong>Location:</strong> {locationDisplay}</p>
         <p><strong>Post Date:</strong> {new Date(job.post_date).toLocaleDateString()}</p>
         {job.salary && <p><strong>Salary:</strong> {job.salary.toLocaleString()}</p>}
         <p><strong>Type:</strong> {job.job_type}</p>
         <p><strong>Description:</strong> {job.job_description}</p>
         <button onClick={handleApplyClick}>Apply</button>
-        <button onClick={handleMarkAsApplied}>{applicationStatus}</button>
+        <button
+          onClick={handleMarkAsApplied}
+          style={buttonStyle}
+          disabled={applicationStatus === 'Applied'}
+        >
+          {applicationStatus}
+        </button>
         <button onClick={() => window.history.back()}>Go Back</button>
       </div>
       <div className="App">

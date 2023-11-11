@@ -1,42 +1,65 @@
 /* JobList.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif; /* Example font */
+  /* Gradient Background */
+  background: linear-gradient(to right, #6dd5ed, #2193b0); /* A refreshing blue gradient */
+  color: #333; /* Default text color for good contrast */
+}
+
 .job-list {
+  display: flex; /* Flex container */
+  flex-direction: column; /* Arrange items in a column */
+  align-items: center; /* Center items horizontally in the container */
   list-style-type: none;
   padding: 20px;
-  margin: 0 auto;
+  margin: 0 auto; /* Center container itself */
   width: 90%;
   max-width: 800px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .job-item {
   border: 1px solid #ddd;
   margin-bottom: 20px;
   padding: 20px;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Ensures job items take full width of the container */
 }
 
 .job-item h3 {
   margin: 0;
   margin-bottom: 10px;
   color: #333;
+  font-size: 20px; /* Slightly larger */
 }
 
 .job-item p {
   margin: 0;
   margin-bottom: 10px;
+  color: #666; /* Softer text color */
 }
 
 .job-item a {
-  color: #0066cc;
+  color: #1a73e8; /* Vibrant link color */
   text-decoration: none;
+  transition: color 0.3s; /* Smooth transition */
 }
 
 .job-item a:hover {
+  color: #0056b3; /* Darker shade on hover */
   text-decoration: underline;
 }
 
 .error {
-  color: red;
+  color: #d32f2f; /* More vibrant error color */
   margin: 20px 0;
 }
 
@@ -45,36 +68,32 @@
   justify-content: center;
   padding: 20px;
   margin-top: 20px;
+  width: 80%;
 }
 
 .pagination button, .page-item {
-  box-sizing: border-box; /* Add this line */
-  border: 1px solid #ddd;
-  padding: 5px 15px;
+  border: none;
+  padding: 10px 15px;
   margin: 0 5px;
   cursor: pointer;
-  background-color: #f8f8f8;
+  background-color: #1a73e8;
   border-radius: 4px;
   font-size: 16px;
+  color: white;
+  transition: background-color 0.3s; /* Smooth transition */
 }
 
 .pagination button:hover, .page-item:hover {
-  background-color: #e8e8e8;
+  background-color: #0056b3;
 }
 
 .pagination .page-item.active {
-  background-color: #007bff;
-  color: white;
+  background-color: #d32f2f;
 }
 
 .pagination .page-item.disabled, .pagination button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
-}
-
-.pagination button.current-page {
-  background-color: #0066cc;
-  color: white;
 }
 
 .loading-indicator {

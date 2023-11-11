@@ -2,32 +2,27 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './JobList.css'; // Ensure you have the CSS file for styling
-
+/**
+ * Component that displays a list of job listings with pagination.
+ * @returns {JSX.Element} The JobList component.
+ */
 function JobList() {
   const [jobs, setJobs] = useState([]);
+  const [appliedStatus, setAppliedStatus] = useState({});
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
   const [isLoading, setIsLoading] = useState(true);
-
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const fetchJobs = async () => {
       setIsLoading(true);
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/job-listings`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setJobs(response.data);
+        response.data.forEach(job => checkIfApplied(job.job_jk));
       } catch (err) {
         setError('Could not fetch jobs. Please try again later.');
       }
@@ -37,10 +32,21 @@ function JobList() {
     fetchJobs();
   }, []);
 
+  const checkIfApplied = async (job_jk) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/is-applied/${job_jk}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setAppliedStatus(prevStatus => ({ ...prevStatus, [job_jk]: response.data.isApplied }));
+    } catch (err) {
+      console.error('Error checking applied status:', err);
+    }
+  };
+
   // Get current jobs for pagination
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  // const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -48,40 +54,50 @@ function JobList() {
   const prevPage = currentPage > 1;
   const nextPage = currentPage < Math.ceil(jobs.length / jobsPerPage);
 
-  // Calculate the number of page buttons to display based on screen width
-  const pageButtonWidth = 42; // Assume each page button is approximately 40px wide
-  const maxPageButtons = Math.floor(windowWidth / pageButtonWidth);
-
+  // Calculate the number of page buttons to display based on screen widt
   // Calculate the start and end page numbers
-  let startPage, endPage;
-  const totalPage = Math.ceil(jobs.length / jobsPerPage);
-  if (totalPage <= maxPageButtons) {
-    // Case 1: total pages is less than max, show all pages
-    startPage = 1;
-    endPage = totalPage;
-  } else if (currentPage <= Math.floor(maxPageButtons / 2)) {
-    // Case 2: current page is near the start, show first pages
+  // Determine the start and end page numbers for pagination
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const maxPageButtons = 10;
+
+let startPage, endPage;
+if (totalPages <= maxPageButtons) {
+  // Case: Total pages less than or equal to 10
+  startPage = 1;
+  endPage = totalPages;
+} else {
+  // Case: More than 10 pages
+  const maxPagesBeforeCurrentPage = Math.floor(maxPageButtons / 2);
+  const maxPagesAfterCurrentPage = Math.ceil(maxPageButtons / 2) - 1;
+  if (currentPage <= maxPagesBeforeCurrentPage) {
+    // Near the beginning; no ellipsis at start
     startPage = 1;
     endPage = maxPageButtons;
-  } else if (currentPage + Math.floor(maxPageButtons / 2) >= totalPage) {
-    // Case 3: current page is near the end, show last pages
-    startPage = totalPage - maxPageButtons + 1;
-    endPage = totalPage;
+  } else if (currentPage + maxPagesAfterCurrentPage >= totalPages) {
+    // Near the end; no ellipsis at end
+    startPage = totalPages - maxPageButtons + 1;
+    endPage = totalPages;
   } else {
-    // Case 4: current page is somewhere in the middle, show pages around current
-    startPage = currentPage - Math.floor(maxPageButtons / 2);
-    endPage = startPage + maxPageButtons - 1;
+    // Somewhere in the middle; ellipsis at both ends
+    startPage = currentPage - maxPagesBeforeCurrentPage;
+    endPage = currentPage + maxPagesAfterCurrentPage;
   }
+}
   
-  // Generate the page buttons
-  const pageButtons = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageButtons.push(
-      <button key={i} onClick={() => paginate(i)} className={`page-item ${currentPage === i ? 'active' : ''}`}>
-        {i}
-      </button>
-    );
-  }
+const pageButtons = [];
+if (startPage > 1) {
+  pageButtons.push(<span key="ellipsis-start">...</span>);
+}
+for (let i = startPage; i <= endPage; i++) {
+  pageButtons.push(
+    <button key={i} onClick={() => paginate(i)} className={`page-item ${currentPage === i ? 'active' : ''}`}>
+      {i}
+    </button>
+  );
+}
+if (endPage < totalPages) {
+  pageButtons.push(<span key="ellipsis-end">...</span>);
+}
 
   return (
     <div className="job-list">
@@ -93,10 +109,11 @@ function JobList() {
         <div>
           <h2>Job Listings</h2>
           {error && <p className="error">{error}</p>}
-          {currentJobs.length ? (
+          {jobs.length ? (
             <ul className="job-list">
-              {currentJobs.map((job) => (
+              {jobs.slice(indexOfFirstJob, indexOfLastJob).map((job) => (
                 <li key={job.job_jk} className="job-item">
+                  {appliedStatus[job.job_jk] && <img src={require('./yes.ico')} alt="Applied" />}
                   <Link to={`/jobs/${job.job_jk}`}>
                     <h3>{job.job_title}</h3>
                   </Link>
@@ -113,13 +130,13 @@ function JobList() {
           ) : (
             <p>No job listings available.</p>
           )}
-          <div className="pagination">
+        </div>
+      )}
+      <div className="pagination">
             {prevPage && <button onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>}
             {pageButtons}
             {nextPage && <button onClick={() => setCurrentPage(currentPage + 1)}>Next</button>}
           </div>
-        </div>
-      )}
     </div>
   );
 }

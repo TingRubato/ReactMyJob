@@ -11,15 +11,15 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { username, password });
       const { accessToken } = response.data;
       console.log('Login response:', response.data); // Logs the token received from the server
-      
+
       localStorage.setItem('token', accessToken); // Store the token
       console.log('Token set in local storage, navigating to home...');
-  
+
       navigate('/jobs'); // Redirect to the home page or dashboard
       console.log('Navigation should have occurred');
     } catch (err) {
@@ -27,12 +27,21 @@ function Login() {
       setError('Failed to login. Please check your username and password.');
     }
   };
-  
+
 
   return (
     <div className="login-container">
       <h2>Login</h2>
+      <div className="image-container">
+      <img 
+  src="./job.jpg" 
+  alt="College don't guarantee a job" 
+  className="image-size"
+/>
+
+      </div>
       {error && <p className="error">{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
